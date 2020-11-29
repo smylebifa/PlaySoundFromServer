@@ -1,3 +1,5 @@
+package ru.samoilov;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -18,19 +20,19 @@ public class Client{
 
       // Создаем поток для чтения с клавиатуры...
       BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-      String file_name = null;
-      System.out.println("Type in name of music file and press enter.");
+      String commandName = null;
+      System.out.println("Type in Play and press enter.");
       System.out.println();
 
       while (true) {
-        // Ждем пока пользователь введет что-то и нажмет кнопку Enter...
-        file_name = keyboard.readLine();
-        System.out.println("Sending this file name to the server...");
-        out.writeUTF(file_name); // Отсылаем введенное название звукового файла серверу...
+        // Ждем пока пользователь введет команду Play и нажмет кнопку Enter...
+        commandName = keyboard.readLine();
+        System.out.println("Sending client message to the server...");
+        out.writeUTF(commandName); // Отсылаем введеное сообщение серверу...
         out.flush(); // Заставляем поток закончить передачу данных...
-        file_name = in.readUTF(); // Ждем ответа от сервера...
-        System.out.println("Server sent : " + file_name);
-        System.out.println("Enter more music file names.");
+        String messageFromServer = in.readUTF(); // Ждем ответа от сервера...
+        System.out.println("Server answer : " + messageFromServer);
+        System.out.println("Enter Play once more.");
         System.out.println();
       }
     } catch (Exception e) { e.printStackTrace(); }
