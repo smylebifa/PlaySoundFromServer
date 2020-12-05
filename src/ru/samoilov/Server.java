@@ -6,38 +6,49 @@ import java.net.Socket;
 
 public class Server {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+
+    // Создаем сокет сервера и привязываем его к вышеуказанному порту...
+    ServerSocket serverSocket = new ServerSocket(3000);
+    System.out.println("Waiting for a client...");
 
     try {
-      // Создаем сокет сервера и привязываем его к вышеуказанному порту...
-      ServerSocket serverSocket = new ServerSocket(3000);
-      System.out.println("Waiting for a client...");
 
       // Заставляем сервер ждать подключений и выводим сообщение когда кто-то связался с сервером...
       Socket socket = serverSocket.accept();
       System.out.println("Got a client.");
 
-      // Создаем входной поток для получения сжатого звукового файла
-      // и выходной поток сокета для отправки данных клиенту...
-      try (InputStream inputStream = new FileInputStream("ZipSound/ZipFile.zip");
-           OutputStream outputStream = socket.getOutputStream()) {
+      try {
+        // Создаем входной поток для получения сжатого звукового файла
+        // и выходной поток сокета для отправки данных клиенту...
+        InputStream inputStream = new FileInputStream("ZipSound/ZipFile.zip");
+        OutputStream outputStream = socket.getOutputStream();
+        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
-        // Передаем архив со звуковым файлом клиенту...
-        System.out.println("Transferring compressed file");
+        String commandName = dataInputStream.readUTF();
 
-        int c = 0;
-        while((c = inputStream.read()) >= 0) {
-          outputStream.write(c);
-          outputStream.flush();
+        // Если введена команда верно, то получаем из архива и воспроизводим звуковой файл...
+        if (commandName.equals("Get") || commandName.equals("get")) {
+
+          // Передаем архив со звуковым файлом клиенту...
+          System.out.println("Transferring compressed file");
+
+          int c = 0;
+          while ((c = inputStream.read()) >= 0) {
+            outputStream.write(c);
+            outputStream.flush();
+          }
+
+          System.out.println("File was transferred");
         }
-
-        System.out.println("File was transferred");
       }
-
-      // Закрываем сокет клиента и сервера...
-      socket.close();
+      finally {
+        System.out.println("closing...");
+        socket.close();
+      }
+    }
+    finally {
       serverSocket.close();
-
-    } catch (IOException e) { e.printStackTrace(); }
+    }
   }
 }
