@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class Server {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
 
     // Создаем сокет сервера и привязываем его к вышеуказанному порту...
     ServerSocket serverSocket = new ServerSocket(3000);
@@ -41,6 +41,7 @@ public class Server {
 
           System.out.println("File was transferred");
         }
+
       }
       finally {
         System.out.println("closing...");

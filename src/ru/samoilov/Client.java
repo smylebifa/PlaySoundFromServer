@@ -19,6 +19,7 @@ public class Client {
     String pathMusicFile = "ZipSound/MusicFile.wav";
 
     try {
+
       // Создаем входной поток сокета для получения сжатого звукового файла.
       // Создаем поток для записи сжатого звукового файла.
       // Создаем потоки для распаковки и записи в файл...
@@ -31,13 +32,16 @@ public class Client {
       while (true) {
         // Создаем поток для чтения с клавиатуры...
         BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Type in Get and press enter.");
+        System.out.println("Enter Get to get music file or Close to close program.");
 
         String commandName = keyboard.readLine();
+
+        if (commandName.equals("Close") || commandName.equals("close")) break;
+
         System.out.println("Sending client command to the server...");
         dataOutputStream.writeUTF(commandName); // Отсылаем введеную команду серверу...
         dataOutputStream.flush(); // Заставляем поток закончить передачу данных...
-
+        
 
         // Получение сжатого звукового файла с сервера...
         System.out.println("Transferring compressed file");
@@ -50,7 +54,6 @@ public class Client {
         System.out.println("Compressed file was transferred");
 
         // Закрываем поток...
-        fileOutputStream.flush();
         fileOutputStream.close();
 
 
@@ -63,12 +66,12 @@ public class Client {
         }
 
         // Закрываем потоки...
-        fileOutputStream.flush();
-        fileOutputStream.close();
+        fileOutputStreamFile.close();
         zipInputStream.closeEntry();
         zipInputStream.close();
 
         System.out.println("Compressed file was saved");
+
 
         // Получаем поток для воспроизведения записанного файла...
         File file = new File(pathMusicFile);
